@@ -7,16 +7,54 @@
         $main = $('#main'),
         $main_articles = $main.children('article');
 
+        var slickSlider_responsive = {
+            slidesToShow: 1,
+            slidesToScroll:1,
+            variableWidth: false,
+            arrows: false,
+            //prevArrow: '<a role="button" class="slick-nav slick-prev pointer slick-arrow"></a>',
+            //nextArrow: '<a role="button" class="slick-nav slick-next pointer slick-arrow"></a>',
+            dots:false,
+            autoplay: true,
+            speed: 1500,
+            autoplaySpeed: 3000,
+            responsive: [
+                {
+                    breakpoint: 1400,
+                    settings: {
+                    }
+                },
+            {
+                breakpoint: 540,
+                settings: {
+                    arrows: false,
+                }
+            }]
+          };
+
     // Play initial animations on page load.
     $window.on('load', function () {
         window.setTimeout(function () {
             $body.removeClass('is-preload');
         }, 100);
-    });
+    }); 
     // Main.
     var delay = 325,
         locked = false,
         articleVisible = false;
+
+    function addSlider(el) {
+        var sslider = el.find('.image-slider');
+        sslider.slick(slickSlider_responsive);
+        sslider.css('visibility','visible');
+    }    
+
+    function removeSlider(el) {
+        var sslider = el.find('.image-slider');
+        sslider.css('visibility','hidden');
+        sslider.slick('unslick');
+        trace("slider removed");
+    }
 
     // Methods.
     $main._show = function (id, initial) {
@@ -31,7 +69,7 @@
 
         // Already locked? Speed through "show" steps w/o delays.
         if (locked || (typeof initial != 'undefined' && initial === true)) {
-
+            
             // Mark as switching.
             $body.addClass('is-switching');
 
@@ -48,9 +86,11 @@
             // Show main, article.
             $main.show();
             $article.show();
-
+            articleVisible = true;
             // Activate article.
             $article.addClass('active');
+
+            addSlider($article);
 
             // Unlock.
             locked = false;
@@ -69,7 +109,7 @@
 
         // Article already visible? Just swap articles.
         if ($body.hasClass('is-article-visible')) {
-
+           
             // Deactivate current article.
             var $currentArticle = $main_articles.filter('.active');
 
@@ -80,10 +120,9 @@
 
                 // Hide current article.
                 $currentArticle.hide();
-
                 // Show article.
                 $article.show();
-
+                articleVisible = true;
                 // Activate article.
                 setTimeout(function () {
 
@@ -115,6 +154,7 @@
 
             // Show article.
             setTimeout(function () {
+                
 
                 // Hide header, footer.
                 $header.hide();
@@ -123,6 +163,8 @@
                 // Show main, article.
                 $main.show();
                 $article.show();
+
+                addSlider($article);
 
                 // Activate article.
                 setTimeout(function () {
@@ -161,7 +203,7 @@
             history.pushState(null, null, '#');
 
         // Handle lock.
-
+        trace("article stop");
         // Already locked? Speed through "hide" steps w/o delays.
         if (locked) {
 
@@ -172,6 +214,7 @@
             $article.removeClass('active');
 
             // Hide article, main.
+          
             $article.hide();
             $main.hide();
 
@@ -197,6 +240,8 @@
             return;
 
         }
+
+        removeSlider($article);
 
         // Lock.
         locked = true;
@@ -242,20 +287,19 @@
 
         var $this = $(this);
 
+        //$this.find('.slick-slider').slick(slickSlider_responsive);
+
         // Close.
         $('<div class="close">Close</div>')
             .appendTo($this)
             .on('click', function () {
-                trace("click1");
                 location.hash = '';
             });
 
         // Prevent clicks from inside article from bubbling.
         $this.on('click', function (event) {
             event.stopPropagation();
-            trace("click2");
         });
-
     });
 
     // Events.
@@ -421,7 +465,7 @@
         document.addEventListener('mousemove', onPointerMove, false);
         document.addEventListener('mouseup', onPointerUp, false);
 
-        //document.addEventListener('wheel', onDocumentMouseWheel, false);
+        document.addEventListener('wheel', onDocumentMouseWheel, false);
 
         document.addEventListener('touchstart', onPointerStart, false);
         document.addEventListener('touchmove', onPointerMove, false);
@@ -500,7 +544,6 @@
     function setupKeyControls() {
 
         document.onkeydown = function (e) {
-            trace(e.key);
             if (selectedObject != null) {
                 switch (e.key) {
                     case 'ArrowLeft':
@@ -555,7 +598,7 @@
 
         if (intersects.length > 0) {
             // reset others
-            for (var i = 0; i < interactiveObjects.length; i++) {
+/*            for (var i = 0; i < interactiveObjects.length; i++) {
                 if (intersects[0].object != interactiveObjects[i]) {
                     interactiveObjects[i].material.opacity = 1;
                     //interactiveObjects[i].material.map = new THREE.TextureLoader().load(jsonScene.folder+"./poi.png");
@@ -569,15 +612,15 @@
                 //intersects[0].object.material.map = new THREE.TextureLoader().load("./poi.png");
                 selectedObject = null;
             } else {
-                intersects[0].object.material.opacity = 0.5;
+                intersects[0].object.material.opacity = 0.5;*/
                 //intersects[0].object.material.map = new THREE.TextureLoader().load("./poi.png");
                 selectedObject = intersects[0].object;
                 trace("name: " + selectedObject.userData.name);
                 jump(selectedObject.userData.link);
-            }
+            //}
         }
     }
-
+    
     function onPointerStart(event) {
         if (articleVisible) return;
         

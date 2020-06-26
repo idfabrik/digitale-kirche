@@ -1,3 +1,49 @@
+/* source-sans-pro-300 - latin */
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Source Sans Pro Light'), local('SourceSansPro-Light'),
+       url('../lib/fonts/source-sans-pro-v13-latin-300.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('../lib/fonts/source-sans-pro-v13-latin-300.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+/* source-sans-pro-regular - latin */
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Source Sans Pro Regular'), local('SourceSansPro-Regular'),
+       url('../lib/fonts/source-sans-pro-v13-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('../lib/fonts/source-sans-pro-v13-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+/* source-sans-pro-700 - latin */
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Source Sans Pro Bold'), local('SourceSansPro-Bold'),
+       url('../lib/fonts/source-sans-pro-v13-latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('../lib/fonts/source-sans-pro-v13-latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+html, body, div, span, applet, object,
+iframe, h1, h2, h3, h4, h5, h6, p, blockquote,
+pre, a, abbr, acronym, address, big, cite,
+code, del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var, b,
+u, i, center, dl, dt, dd, ol, ul, li, fieldset,
+form, label, legend, table, caption, tbody,
+tfoot, thead, tr, th, td, article, aside,
+canvas, details, embed, figure, figcaption,
+footer, header, hgroup, menu, nav, output, ruby,
+section, summary, time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+  vertical-align: baseline;
+}
+  
 body {
   margin: 0;
   background-color: #000;
@@ -121,7 +167,7 @@ body {
   display: inline-block;
   position: relative;
 }
-
+/*
 .image:before {
   pointer-events: none;
   background-image: url("../../images/overlay.png");
@@ -135,7 +181,7 @@ body {
   position: absolute;
   top: 0;
   width: 100%;
-}
+}*/
 
 .image img {
   border-radius: 4px;
@@ -227,9 +273,9 @@ html {
 
 body, input, select, textarea {
 	color: #ffffff;
-	font-family: "Source Sans Pro", sans-serif;
-	
+	font-family: 'Source Sans Pro', sans-serif;
 	font-weight: 300;
+	
 	font-size: 1rem;
 	line-height: 1.65;
 }
@@ -650,4 +696,8 @@ dl dd {
   #main article {
     padding: 3rem 1.5rem 0.5rem 1.5rem;
   }
+}
+
+#main ul.image-slider {
+  padding-left: 0;
 }

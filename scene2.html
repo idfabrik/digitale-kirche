@@ -5,8 +5,7 @@
 	<title>Szene 2</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;700&display=swap" rel="stylesheet">
-
+	<link type="text/css" rel="stylesheet" href="lib/slick/slick.css">
 	<link type="text/css" rel="stylesheet" href="css/main.css">
 </head>
 
@@ -30,8 +29,13 @@
 
 			<!-- Intro -->
 			<article id="article1">
-				<h2 class="major">Article 1</h2>
-				<span class="image main"><img src="images/pic01.jpg" alt="" /></span>
+				<h2 class="major">Article with Image Slider</h2>
+				<ul class="image-slider">
+					<li><span class="image main"><img src="images/pic01.jpg" alt="" />Bild 1</span></li>
+					<li><span class="image main"><img src="images/pic02.jpg" alt="" />Bild 2</span></li>
+					<li><span class="image main"><img src="images/pic01.jpg" alt="" />Bild 3</span></li>
+				</ul>
+				
 				<p>Aenean ornare velit lacus, ac varius enim ullamcorper eu. Proin aliquam facilisis ante interdum
 					congue. Integer mollis, nisl amet convallis, porttitor magna ullamcorper, amet egestas mauris. Ut
 					magna finibus nisi nec lacinia. Nam maximus erat id euismod egestas. By the way, check out my <a
@@ -84,11 +88,11 @@
 		</footer>
 	</div>
 	<div id="scene"></div>
-	<script type="text/javascript" src="lib/three.js"></script>
-	<script type="text/javascript" src="lib/Projector.js"></script>
-	<script src="lib/dat.gui.min.js"></script>
-    <script src="lib/jquery.min.js"></script>
-    <script type="text/javascript" src="lib/slick.min.js"></script>
+	<script type="text/javascript" src="lib/threejs/three.min.js"></script>
+	<script type="text/javascript" src="lib/threejs/Projector.js"></script>
+	<script type="text/javascript" src="lib/threejs/dat.gui.min.js"></script>
+	<script type="text/javascript" src="lib/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/slick/slick.min.js"></script>
     
     <script type="application/json" id="scenedata">{
         "scene": {
