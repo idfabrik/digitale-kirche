@@ -5,11 +5,16 @@ body {
   overscroll-behavior: none;
   -webkit-text-size-adjust: none;
 }
-html,
+
 body {
   /* prevent scrolling on touch devices*/
   height: 100%;
   overflow: hidden;
+}
+body.is-article-visible {
+  /* prevent scrolling on touch devices*/
+  height: auto;
+  overflow: initial;
 }
 article,
 aside,

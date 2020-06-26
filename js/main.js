@@ -363,8 +363,6 @@
     */
 
 
-    //import * as THREE from './js/three.module.js';
-
     var camera, scene, renderer;
     var interactiveObjects, selectedObject;
     var isUserInteracting = false,
@@ -393,7 +391,7 @@
         // invert the geometry on the x-axis so that all of the faces point inward
         geometry.scale(- 1, 1, 1);
 
-        var texture = loader.load(jsonScene.panoImage);
+        var texture = loader.load(jsonScene.folder+jsonScene.panoImage);
         var material = new THREE.MeshBasicMaterial({ wireframe: false, map: texture });
 
         mesh = new THREE.Mesh(geometry, material);
@@ -423,7 +421,7 @@
         document.addEventListener('mousemove', onPointerMove, false);
         document.addEventListener('mouseup', onPointerUp, false);
 
-        document.addEventListener('wheel', onDocumentMouseWheel, false);
+        //document.addEventListener('wheel', onDocumentMouseWheel, false);
 
         document.addEventListener('touchstart', onPointerStart, false);
         document.addEventListener('touchmove', onPointerMove, false);
@@ -439,42 +437,19 @@
         gui.add(controlObject, 'positionY', -100, 100);
     }
 
-    function loadJson(file) {
-        var fileLoader = new THREE.FileLoader();
-        fileLoader.load(file, onLoadCallback, onProgressCallback, onErrorCallback);
-
-    }
-    function onLoadCallback(loaded) {
-        // just output the length for arrays and binary blobs
-        if (loaded.length) {
-            trace("Loaded", loaded.length); // bytes
-            jsonScene = JSON.parse(loaded).scene;
-            init();
-            addLoadedGeometry();
-            animate();
-        } else {
-            trace("Loaded", loaded);
-        }
-    }
-
-    function onProgressCallback(progress) {
-        trace("Progress", progress);
-    }
-
-    function onErrorCallback(error) {
-        trace("Error", error)
-    }
-
+    
     function addLoadedGeometry() {
         interactiveObjects = [];
 
+        var w = parseInt(jsonScene.poiWidth);
+        var h = parseInt(jsonScene.poiHeight);
         //var geometry = new THREE.BoxBufferGeometry(20, 20, 20);
-        var geometry = new THREE.PlaneGeometry(50, 50, 10);
+        var geometry = new THREE.PlaneGeometry(w, h, 10);
         var l = jsonScene.objects.length;
 
         for (var i = 0; i < l; i++) {
             var mat = new THREE.MeshPhongMaterial();
-            mat.map = new THREE.TextureLoader().load(jsonScene.objects[i].map);
+            mat.map = new THREE.TextureLoader().load(jsonScene.folder+jsonScene.objects[i].poi);
             mat.flatShading = true;
             mat.transparent = true;
             var object = new THREE.Mesh(geometry, mat);
@@ -486,10 +461,11 @@
             object.position.y = parseInt(jsonScene.objects[i].y);
             object.position.z = parseInt(jsonScene.objects[i].z);
 
-            var fac = parseInt(jsonScene.objects[i].scalePercent) / 100;
-            object.scale.set(fac, fac, fac)
-
-
+            if (jsonScene.objects[i].scalePercent) {
+                var fac = parseInt(jsonScene.objects[i].scalePercent) / 100;
+                trace(fac);
+                object.scale.set(fac, fac, fac)
+            } 
             object.lookAt(camera.position);
 
             scene.add(object);
@@ -582,43 +558,23 @@
             for (var i = 0; i < interactiveObjects.length; i++) {
                 if (intersects[0].object != interactiveObjects[i]) {
                     interactiveObjects[i].material.opacity = 1;
-                    interactiveObjects[i].material.map = new THREE.TextureLoader().load("./jesus1.png");
+                    //interactiveObjects[i].material.map = new THREE.TextureLoader().load(jsonScene.folder+"./poi.png");
                 }
             }
 
             intersects[0].object.material.transparent = true;
 
-            //var material2 = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load("./move.png")});
-
             if (intersects[0].object.material.opacity !== 1) {
                 intersects[0].object.material.opacity = 1;
-                intersects[0].object.material.map = new THREE.TextureLoader().load("./jesus1.png");
+                //intersects[0].object.material.map = new THREE.TextureLoader().load("./poi.png");
                 selectedObject = null;
             } else {
-                intersects[0].object.material.opacity = 0.9;
-                intersects[0].object.material.map = new THREE.TextureLoader().load("./move.png");
+                intersects[0].object.material.opacity = 0.5;
+                //intersects[0].object.material.map = new THREE.TextureLoader().load("./poi.png");
                 selectedObject = intersects[0].object;
                 trace("name: " + selectedObject.userData.name);
                 jump(selectedObject.userData.link);
             }
-
-
-            /* show ray*/
-            /*
-            var points = [];
-            points.push(new THREE.Vector3(camera.position.x, camera.position.y - 0.2, camera.position.z));
-            points.push(intersects[0].point);
-	
-            var mat = new THREE.MeshBasicMaterial({color: 0xff0000, transparent: true, opacity: 0.6});
-            var tubeGeometry = new THREE.TubeGeometry(new THREE.SplineCurve3(points), 60, 0.011);
-	
-            if (tube) scene.remove(tube);
-	
-            if (controls.showRay) {
-                tube = new THREE.Mesh(tubeGeometry, mat);
-                scene.add(tube);
-            }
-            */
         }
     }
 
@@ -693,7 +649,16 @@
     function trace(s) { try { console.log(s); } catch (e) {/*alert(s); */ } }
     function showProp(obj) { for (var key in obj) trace(key + " : " + obj[key]); }
 
-    loadJson('./json/scene1.json');
+    
+    var data = document.getElementById('scenedata');
+    if (data) {
+        jsonScene =  JSON.parse(data.innerHTML).scene;
+        init();
+        addLoadedGeometry();
+        animate();
+    } else {
+        alert("No Scene Data");
+    }
 
 
 })(jQuery);
