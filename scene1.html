@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Szene 1</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;700&display=swap" rel="stylesheet">
+	<link type="text/css" rel="stylesheet" href="lib/slick/slick.css">
+	<link type="text/css" rel="stylesheet" href="css/main.css">
+</head>
+
+<body class="is-preload">
+
+	<!-- Wrapper -->
+	<div id="wrapper">
+
+		<!-- Header -->
+		<header id="header">
+				<nav>
+					<ul>
+						<li><a href="index.html">Home</a></li>
+						<li><a href="scene1.html">Scene 1</a></li>
+						<li><a href="scene2.html">Scene 2</a></li>
+					</ul>
+				</nav>
+			</header>
+
+		<div id="main">
+
+			<!-- Intro -->
+			<article id="article1">
+				<h2 class="major">Article 1</h2>
+				<ul class="slick-slider">
+					<li><span class="image main"><img src="images/pic01.jpg" alt="" /></span></li>
+					<li><span class="image main"><img src="images/pic01.jpg" alt="" /></span></li>
+					<li><span class="image main"><img src="images/pic01.jpg" alt="" /></span></li>
+				</ul>
+				<p>Aenean ornare velit lacus, ac varius enim ullamcorper eu. Proin aliquam facilisis ante interdum
+					congue. Integer mollis, nisl amet convallis, porttitor magna ullamcorper, amet egestas mauris. Ut
+					magna finibus nisi nec lacinia. Nam maximus erat id euismod egestas. By the way, check out my <a
+						href="#work">awesome work</a>.</p>
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent
+					taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique
+					libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut
+					ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor.
+					Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique
+					senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus.
+					Pellentesque aliquam maximus risus, vel sed vehicula.</p>
+			</article>
+			<article id="article2">
+				<h2 class="major">Article 2</h2>
+				<span class="image main"><img src="images/pic02.jpg" alt="" /></span>
+				<p>Adipiscing magna sed dolor elit. Praesent eleifend dignissim arcu, at eleifend sapien imperdiet ac.
+					Aliquam erat volutpat. Praesent urna nisi, fringila lorem et vehicula lacinia quam. Integer
+					sollicitudin mauris nec lorem luctus ultrices.</p>
+				<p>Nullam et orci eu lorem consequat tincidunt vivamus et sagittis libero. Mauris aliquet magna magna
+					sed nunc rhoncus pharetra. Pellentesque condimentum sem. In efficitur ligula tate urna. Maecenas
+					laoreet massa vel lacinia pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat
+					tincidunt. Vivamus et sagittis libero. Mauris aliquet magna magna sed nunc rhoncus amet feugiat
+					tempus.</p>
+			</article>
+			<article id="article3">
+					<h2 class="major">Article 3</h2>
+					<p>Adipiscing magna sed dolor elit. Praesent eleifend dignissim arcu, at eleifend sapien imperdiet ac.
+						Aliquam erat volutpat. Praesent urna nisi, fringila lorem et vehicula lacinia quam. Integer
+						sollicitudin mauris nec lorem luctus ultrices.</p>
+					<p>Nullam et orci eu lorem consequat tincidunt vivamus et sagittis libero. Mauris aliquet magna magna
+						sed nunc rhoncus pharetra. Pellentesque condimentum sem. In efficitur ligula tate urna. Maecenas
+						laoreet massa vel lacinia pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat
+						tincidunt. Vivamus et sagittis libero. Mauris aliquet magna magna sed nunc rhoncus amet feugiat
+						tempus.</p>
+				</article>
+				<article id="article4">
+						<h2 class="major">Article 4</h2>
+						<p>Adipiscing magna sed dolor elit. Praesent eleifend dignissim arcu, at eleifend sapien imperdiet ac.
+							Aliquam erat volutpat. Praesent urna nisi, fringila lorem et vehicula lacinia quam. Integer
+							sollicitudin mauris nec lorem luctus ultrices.</p>
+						<p>Nullam et orci eu lorem consequat tincidunt vivamus et sagittis libero. Mauris aliquet magna magna
+							sed nunc rhoncus pharetra. Pellentesque condimentum sem. In efficitur ligula tate urna. Maecenas
+							laoreet massa vel lacinia pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat
+							tincidunt. Vivamus et sagittis libero. Mauris aliquet magna magna sed nunc rhoncus amet feugiat
+							tempus.</p>
+					</article>
+					</div>
+		<footer id="footer">
+			<!--<p class="copyright">&copy; Untitled. Design: <a href="https://website.net">company</a>.</p>-->
+		</footer>
+	</div>
+	<div id="scene"></div>
+	<script type="text/javascript" src="lib/three.js"></script>
+	<script type="text/javascript" src="lib/Projector.js"></script>
+	<script src="lib/dat.gui.min.js"></script>
+	<script src="lib/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/slick/slick.min.js"></script>
+	
+    
+    <script type="application/json" id="scenedata">{
+        "scene": {
+            "folder":"scene1/",
+            "panoImage": "./Castle_Church_of_Lutherstadt_Wittenberg_8k.jpg",
+			"panoRadius":"500",
+			"poiHeight":"8",
+			"poiWidth":"8",
+            "objects": [
+                {
+                    "name": "tollesObjekt 1",
+                    "x": "-50",
+                    "y": "0",
+                    "z": "50",
+                    "scalePercent":"90",
+                    "poi": "./poi.png",
+                    "link":"article1"
+                },
+                {
+                    "name": "tollesObjekt 2",
+                    "x": "-100",
+                    "y": "0",
+                    "z": "20",
+                    "poi": "./poi.png",
+                    "link":"article2"
+                },
+                {
+                    "name": "tollesObjekt 3",
+                    "x": "-120",
+                    "y": "0",
+                    "z": "0",
+                    "poi": "./poi.png",
+                    "link":"article3"
+    
+                },
+                {
+                    "name": "tollesObjekt 4",
+                    "x": "-150",
+                    "y": "0",
+                    "z": "-40",
+                    "poi": "./poi.png",
+                    "link":"article4"
+    
+                },
+                {
+                    "name": "tollesObjekt 5",
+                    "x": "-200",
+                    "y": "0",
+                    "z": "-100",
+                    "poi": "./poi.png",
+                    "link":"article5"
+    
+                }
+            ]
+        }
+    }
+    </script>
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>
