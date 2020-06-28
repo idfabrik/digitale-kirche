@@ -242,6 +242,7 @@
         }
 
         removeSlider($article);
+        stopAllIframeVideos();
 
         // Lock.
         locked = true;
@@ -306,10 +307,9 @@
     $body.on('click', function (event) {
 
         // Article visible? Hide.
-        if ($body.hasClass('is-article-visible'))
+        //if ($body.hasClass('is-article-visible'))
             //$main._hide(true);
-            trace("click3");
-
+    
     });
 
     /*$window.on('keyup', function (event) {
@@ -330,9 +330,14 @@
         }
 
     });*/
+    function getUrlParams(prop){
+        var p={};
+        window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(s,prop,v){p[prop]=v})
+        return prop?p[prop]:p;
+    }
+
 
     $window.on('hashchange', function (event) {
-
         // Empty hash?
         if (location.hash == ''
             || location.hash == '#') {
@@ -388,6 +393,9 @@
     // Hide main, articles.
     $main.hide();
     $main_articles.hide();
+    
+    var mode = getUrlParams("mode").replace('#','');
+    var editMode = (mode == "edit")?true:false;
 
     // Initial article.
     if (location.hash != ''
@@ -395,6 +403,9 @@
         $window.on('load', function () {
             $main._show(location.hash.substr(1), true);
         });
+
+
+
     /*
              ███████████    █████████   ██████   █████    ███████   
             ░░███░░░░░███  ███░░░░░███ ░░██████ ░░███   ███░░░░░███ 
@@ -507,7 +518,6 @@
 
             if (jsonScene.objects[i].scalePercent) {
                 var fac = parseInt(jsonScene.objects[i].scalePercent) / 100;
-                trace(fac);
                 object.scale.set(fac, fac, fac)
             } 
             object.lookAt(camera.position);
@@ -545,6 +555,7 @@
 
         document.onkeydown = function (e) {
             if (selectedObject != null) {
+                trace(e.key);
                 switch (e.key) {
                     case 'ArrowLeft':
                         selectedObject.position.z += 2;
@@ -564,6 +575,16 @@
                     case 'PageDown':
                         selectedObject.position.y -= 2;
                         break;
+                    case '+':
+                        var sc = selectedObject.scale.x;
+                        sc += .05
+                        selectedObject.scale.set(sc, sc, sc)
+                        break;
+                    case '-':
+                        var sc = selectedObject.scale.x;
+                        sc -= .05
+                        selectedObject.scale.set(sc, sc, sc)
+                    break;
                 }
                 trace(selectedObject.position.x + " : " + selectedObject.position.y + " : " + selectedObject.position.z);
             }
@@ -598,26 +619,32 @@
 
         if (intersects.length > 0) {
             // reset others
-/*            for (var i = 0; i < interactiveObjects.length; i++) {
+            for (var i = 0; i < interactiveObjects.length; i++) {
                 if (intersects[0].object != interactiveObjects[i]) {
-                    interactiveObjects[i].material.opacity = 1;
-                    //interactiveObjects[i].material.map = new THREE.TextureLoader().load(jsonScene.folder+"./poi.png");
+                    //interactiveObjects[i].material.opacity = 1;
+                    interactiveObjects[i].material.map = new THREE.TextureLoader().load(jsonScene.folder+jsonScene.objects[i].poi);
                 }
             }
 
             intersects[0].object.material.transparent = true;
 
-            if (intersects[0].object.material.opacity !== 1) {
-                intersects[0].object.material.opacity = 1;
-                //intersects[0].object.material.map = new THREE.TextureLoader().load("./poi.png");
+            if (!editMode) {
+                jump(intersects[0].object.userData.link);
+            } else {
+            if (intersects[0].object == selectedObject) {
+            //if (intersects[0].object.material.opacity !== 1) {
+                //intersects[0].object.material.opacity = 1;
+                var id = intersects[0].object.userData.id;
+                intersects[0].object.material.map = new THREE.TextureLoader().load(jsonScene.folder+jsonScene.objects[id].poi);
+                prompt("Koordinaten von: "+selectedObject.userData.name, '"x":'+selectedObject.position.x+'", y":'+selectedObject.position.y+'", z":'+selectedObject.position.z+'", scalePercent":'+parseInt(selectedObject.scale.x*100));
+                
                 selectedObject = null;
             } else {
-                intersects[0].object.material.opacity = 0.5;*/
-                //intersects[0].object.material.map = new THREE.TextureLoader().load("./poi.png");
+                //intersects[0].object.material.opacity = 0.5;
+                intersects[0].object.material.map = new THREE.TextureLoader().load("./images/move.png");
                 selectedObject = intersects[0].object;
-                trace("name: " + selectedObject.userData.name);
-                jump(selectedObject.userData.link);
-            //}
+            }
+        }
         }
     }
     
@@ -689,6 +716,35 @@
         */
         renderer.render(scene, camera);
     }
+    /*
+     █████   █████ █████ ██████████   ██████████    ███████   
+    ░░███   ░░███ ░░███ ░░███░░░░███ ░░███░░░░░█  ███░░░░░███ 
+     ░███    ░███  ░███  ░███   ░░███ ░███  █ ░  ███     ░░███
+     ░███    ░███  ░███  ░███    ░███ ░██████   ░███      ░███
+     ░░███   ███   ░███  ░███    ░███ ░███░░█   ░███      ░███
+      ░░░█████░    ░███  ░███    ███  ░███ ░   █░░███     ███ 
+        ░░███      █████ ██████████   ██████████ ░░░███████░  
+         ░░░      ░░░░░ ░░░░░░░░░░   ░░░░░░░░░░    ░░░░░░░    
+*/
+    function stopAllIframeVideos() {
+        $("iframe").each(function() { 
+            var src= $(this).attr('src');
+            $(this).attr('src',src);  
+        });                                                              
+    }                                                              
+                                                               
+    /*
+      █████████  ███████████   █████████   ███████████   ███████████
+     ███░░░░░███░█░░░███░░░█  ███░░░░░███ ░░███░░░░░███ ░█░░░███░░░█
+    ░███    ░░░ ░   ░███  ░  ░███    ░███  ░███    ░███ ░   ░███  ░ 
+    ░░█████████     ░███     ░███████████  ░██████████      ░███    
+     ░░░░░░░░███    ░███     ░███░░░░░███  ░███░░░░░███     ░███    
+     ███    ░███    ░███     ░███    ░███  ░███    ░███     ░███    
+    ░░█████████     █████    █████   █████ █████   █████    █████   
+     ░░░░░░░░░     ░░░░░    ░░░░░   ░░░░░ ░░░░░   ░░░░░    ░░░░░    
+*/                                                                    
+                                                                    
+                                                                    
     function trace(s) { try { console.log(s); } catch (e) {/*alert(s); */ } }
     function showProp(obj) { for (var key in obj) trace(key + " : " + obj[key]); }
 

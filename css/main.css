@@ -230,14 +230,41 @@ body {
   width: 100%;
 }
 
+.video  {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  margin: 2.5rem 0;
+}
+ 
+/* 16x9 Aspect Ratio */
+.ar16x9 {
+  padding-bottom: 56.25%;
+}
+ 
+/* 4x3 Aspect Ratio */
+.ar4x3 {
+  padding-bottom: 75%;
+}
+
+.video iframe {
+  position: absolute;
+  top:0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 @media screen and (max-width: 736px) {
-  .image.main {
+  .image.main,
+  .video  {
     margin: 2rem 0;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .image.main {
+  .image.main,
+  .video  {
     margin: 1.5rem 0;
   }
 }
