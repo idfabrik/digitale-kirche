@@ -218,6 +218,7 @@ body {
 
 .image.fit img {
   width: 100%;
+  
 }
 
 .image.main {
@@ -228,6 +229,7 @@ body {
 
 .image.main img {
   width: 100%;
+
 }
 
 .video  {
@@ -727,4 +729,24 @@ dl dd {
 
 #main ul.image-slider {
   padding-left: 0;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.col-xs {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+}
+.row {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-right: -0.5rem;
+  margin-left: -0.5rem;
 }

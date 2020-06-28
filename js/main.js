@@ -665,7 +665,7 @@
             onMouseDownLon = lon;
             onMouseDownLat = lat;
 
-            detectObjects(event.clientX, event.clientY);
+            detectObjects(clientX, clientY);
         
     }
 
@@ -684,6 +684,7 @@
 
     function onPointerUp() {
         isUserInteracting = false;
+       
     }
 
     function onDocumentMouseWheel(event) {
