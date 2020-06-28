@@ -394,8 +394,12 @@
     $main.hide();
     $main_articles.hide();
     
-    var mode = getUrlParams("mode").replace('#','');
-    var editMode = (mode == "edit")?true:false;
+    var editMode = false;
+    var mode = getUrlParams("mode");
+    if (mode) {
+        mode.replace('#','');
+        editMode = (mode == "edit")?true:false;
+    }
 
     // Initial article.
     if (location.hash != ''
