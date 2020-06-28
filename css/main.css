@@ -218,6 +218,7 @@ body {
 
 .image.fit img {
   width: 100%;
+  
 }
 
 .image.main {
@@ -228,6 +229,7 @@ body {
 
 .image.main img {
   width: 100%;
+
 }
 
 .video  {
@@ -356,7 +358,10 @@ h1, h2, h3, h4, h5, h6 {
 		width: max-content;
 		padding-bottom: 0.5rem;
 		margin: 0 0 2rem 0;
-	}
+  }
+  h2.major {
+    width: auto;
+  }
 
 h1 {
 	font-size: 2.25rem;
@@ -726,5 +731,33 @@ dl dd {
 }
 
 #main ul.image-slider {
-  padding-left: 0;
+  padding: 0;
+    list-style-type: none;
+    margin: 0;
 }
+#main ul.image-slider li {
+  padding: 0;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.col-xs {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+}
+.row {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-right: -0.5rem;
+  margin-left: -0.5rem;
+}
+
+.slick-prev {}
+.slick-arrow{}

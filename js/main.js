@@ -11,7 +11,7 @@
             slidesToShow: 1,
             slidesToScroll:1,
             variableWidth: false,
-            arrows: false,
+            arrows: true,
             //prevArrow: '<a role="button" class="slick-nav slick-prev pointer slick-arrow"></a>',
             //nextArrow: '<a role="button" class="slick-nav slick-next pointer slick-arrow"></a>',
             dots:false,
@@ -523,7 +523,9 @@
             if (jsonScene.objects[i].scalePercent) {
                 var fac = parseInt(jsonScene.objects[i].scalePercent) / 100;
                 object.scale.set(fac, fac, fac)
-            } 
+            } else {
+                jsonScene.objects[i].scalePercent = 100;
+            }
             object.lookAt(camera.position);
 
             scene.add(object);
@@ -651,7 +653,35 @@
         }
         }
     }
-    
+    var lastHoverId=-1;
+
+    function detectObjectsHover(posX, posY) {
+
+        var vector = new THREE.Vector3((posX / window.innerWidth) * 2 - 1, -(posY / window.innerHeight) * 2 + 1, 0.5);
+        projector.unprojectVector(vector, camera);
+
+        var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+
+        var intersects = raycaster.intersectObjects(interactiveObjects);
+        
+        var fac = 1;
+        if(intersects.length > 0) {
+            var id = intersects[0].object.userData.id;
+            var sc = parseInt(jsonScene.objects[id].scalePercent)/100; 
+            $('html,body').css('cursor', 'pointer');
+            fac = sc * 1.4;
+            intersects[0].object.scale.set(fac, fac, fac)
+            lastHoverId = id;
+        } else {
+            $('html,body').css('cursor', 'default');
+            if (lastHoverId >=0 ) {
+                var sc = parseInt(jsonScene.objects[lastHoverId].scalePercent)/100; 
+                interactiveObjects[lastHoverId].scale.set(fac, fac, fac)
+                lastHoverId = -1;
+            }
+        }
+    }
+
     function onPointerStart(event) {
         if (articleVisible) return;
         
@@ -665,7 +695,7 @@
             onMouseDownLon = lon;
             onMouseDownLat = lat;
 
-            detectObjects(event.clientX, event.clientY);
+            detectObjects(clientX, clientY);
         
     }
 
@@ -678,12 +708,16 @@
 
             lon = (onMouseDownMouseX - clientX) * 0.1 + onMouseDownLon;
             lat = (clientY - onMouseDownMouseY) * 0.1 + onMouseDownLat;
+        } else {
+            // nur mouse
+            detectObjectsHover(event.clientX, event.clientY);
         }
     
     }
 
     function onPointerUp() {
         isUserInteracting = false;
+       
     }
 
     function onDocumentMouseWheel(event) {
