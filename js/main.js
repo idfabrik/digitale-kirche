@@ -433,15 +433,15 @@
     var control;
     var jsonScene;
 
-    var manager = new THREE.LoadingManager();
-    var loader = new THREE.TextureLoader(manager);
+    //var manager = new THREE.LoadingManager();
+    //var loader = new THREE.TextureLoader(manager);
 
     function init() {
 
         var container, mesh;
         container = document.getElementById('scene');
 
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
+        camera = new THREE.PerspectiveCamera(45, $(container).width() / $(container).height(), 1, 1100);
         camera.target = new THREE.Vector3(0, 0, 0);
 
         scene = new THREE.Scene();
@@ -450,13 +450,44 @@
         // invert the geometry on the x-axis so that all of the faces point inward
         geometry.scale(- 1, 1, 1);
 
-        var texture = loader.load(jsonScene.folder+jsonScene.panoImage);
+        // PRELOADER START
+
+        const loadingManager = new THREE.LoadingManager( () => {
+	
+            const loadingScreen = document.getElementById( 'loading-screen' );
+            loadingScreen.classList.add( 'fade-out' );
+            
+            // optional: remove loader from DOM via event listener
+            loadingScreen.addEventListener( 'transitionend', onTransitionEnd );
+            
+        } );
+    
+    
+        const loader = new THREE.TextureLoader( loadingManager );
+
+        var texture = loader.load(jsonScene.folder+jsonScene.panoImage, ( collada ) => {
+
+            var material = new THREE.MeshBasicMaterial({ wireframe: false, map: texture });
+
+            mesh = new THREE.Mesh(geometry, material);
+    
+            scene.add(mesh);
+
+        } );
+        
+        function onTransitionEnd() {
+            trace("texture loaded");
+        }
+        // PRELOADER END
+
+/*
+        //var texture = loader.load(jsonScene.folder+jsonScene.panoImage);
         var material = new THREE.MeshBasicMaterial({ wireframe: false, map: texture });
 
         mesh = new THREE.Mesh(geometry, material);
 
         scene.add(mesh);
-
+*/
         // add light
         var light = new THREE.AmbientLight(0xffffff);
         scene.add(light);
@@ -473,7 +504,11 @@
 
         renderer = new THREE.WebGLRenderer();
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        //renderer.setSize(window.innerWidth, window.innerHeight);
+        //renderer.setSize(container.clientWidth, container.clientHeight);
+
+        renderer.setSize($(container).width(), $(container).height());
+
         container.appendChild(renderer.domElement);
 
         document.addEventListener('mousedown', onPointerStart, false);
@@ -598,9 +633,13 @@
     }
 
     function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
+        var container = document.getElementById('scene');
+        var w = $(container).width();
+        var h = $(container).height();
+        camera.aspect = w / h;
         camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(w, h);
+        //renderer.setSize(window.innerWidth, window.innerHeight);
     }
     
     function jump(h){
@@ -615,8 +654,11 @@
     var projector = new THREE.Projector();
 
     function detectObjects(posX, posY) {
+        var container = document.getElementById('scene');
+        var w = $(container).width();
+        var h = $(container).height();
 
-        var vector = new THREE.Vector3((posX / window.innerWidth) * 2 - 1, -(posY / window.innerHeight) * 2 + 1, 0.5);
+        var vector = new THREE.Vector3((posX / w) * 2 - 1, -(posY / h) * 2 + 1, 0.5);
         projector.unprojectVector(vector, camera);
 
         var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
@@ -642,7 +684,7 @@
                 //intersects[0].object.material.opacity = 1;
                 var id = intersects[0].object.userData.id;
                 intersects[0].object.material.map = new THREE.TextureLoader().load(jsonScene.folder+jsonScene.objects[id].poi);
-                prompt("Koordinaten von: "+selectedObject.userData.name, '"x":'+selectedObject.position.x+'", y":'+selectedObject.position.y+'", z":'+selectedObject.position.z+'", scalePercent":'+parseInt(selectedObject.scale.x*100));
+                prompt("Koordinaten von: "+selectedObject.userData.name, '"x":'+selectedObject.position.x+'", y":'+selectedObject.position.y+'", z":'+selectedObject.position.z+'"');//, scalePercent":'+parseInt(selectedObject.scale.x*100));
                 
                 selectedObject = null;
             } else {
@@ -657,7 +699,11 @@
 
     function detectObjectsHover(posX, posY) {
 
-        var vector = new THREE.Vector3((posX / window.innerWidth) * 2 - 1, -(posY / window.innerHeight) * 2 + 1, 0.5);
+        var container = document.getElementById('scene');
+        var w = $(container).width();
+        var h = $(container).height();
+
+        var vector = new THREE.Vector3((posX / w) * 2 - 1, -(posY / h) * 2 + 1, 0.5);
         projector.unprojectVector(vector, camera);
 
         var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
