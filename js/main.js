@@ -408,7 +408,18 @@
             $main._show(location.hash.substr(1), true);
         });
 
+    // capture navigation links with animation
+    $('li.animated a').on('click', function (evt) {
+        evt.preventDefault();
+        var hash = evt.target.hash.substr(1);
+        for (var i = 0; i < interactiveObjects.length; i++) {
+            if (interactiveObjects[i].userData.link == hash) {
+                camera2position(interactiveObjects[i]);
+                break;
+            }
+        }
 
+    });
 
     /*
              ███████████    █████████   ██████   █████    ███████   
@@ -433,7 +444,7 @@
         lookAtSrc, lookAtTarget;
 
     var control;
-    var jsonScene;
+    var jsonScene, cw = 1600;
 
     //var manager = new THREE.LoadingManager();
     //var loader = new THREE.TextureLoader(manager);
@@ -442,8 +453,11 @@
 
         var container, mesh;
         container = document.getElementById('scene');
+        
+        var cw = $(container).width();
+        //if (cw > 1600) cw = 1600;
 
-        camera = new THREE.PerspectiveCamera(45, $(container).width() / $(container).height(), 1, 1100);
+        camera = new THREE.PerspectiveCamera(45, cw / $(container).height(), 1, 1100);
         camera.target = new THREE.Vector3(0, 0, 0);
 
         scene = new THREE.Scene();
@@ -475,14 +489,6 @@
         }
         // PRELOADER END
 
-/*
-        //var texture = loader.load(jsonScene.folder+jsonScene.panoImage);
-        var material = new THREE.MeshBasicMaterial({ wireframe: false, map: texture });
-
-        mesh = new THREE.Mesh(geometry, material);
-
-        scene.add(mesh);
-*/
         // add light
         var light = new THREE.AmbientLight(0xffffff);
         scene.add(light);
@@ -499,10 +505,7 @@
 
         renderer = new THREE.WebGLRenderer();
         renderer.setPixelRatio(window.devicePixelRatio);
-        //renderer.setSize(window.innerWidth, window.innerHeight);
-        //renderer.setSize(container.clientWidth, container.clientHeight);
-
-        renderer.setSize($(container).width(), $(container).height());
+        renderer.setSize(cw, $(container).height());
 
         container.appendChild(renderer.domElement);
 
