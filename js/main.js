@@ -428,7 +428,9 @@
         onMouseDownMouseX = 0, onMouseDownMouseY = 0,
         lon = 180, onMouseDownLon = 0,
         lat = 0, onMouseDownLat = 0,
-        phi = 0, theta = 0;
+        phi = 0, theta = 0,
+        animateCamera = false,
+        lookAtSrc, lookAtTarget;
 
     var control;
     var jsonScene;
@@ -453,26 +455,19 @@
         // PRELOADER START
 
         const loadingManager = new THREE.LoadingManager( () => {
-	
-            const loadingScreen = document.getElementById( 'loading-screen' );
+	        const loadingScreen = document.getElementById( 'loading-screen' );
             loadingScreen.classList.add( 'fade-out' );
-            
             // optional: remove loader from DOM via event listener
             loadingScreen.addEventListener( 'transitionend', onTransitionEnd );
             
         } );
-    
-    
+        
         const loader = new THREE.TextureLoader( loadingManager );
 
         var texture = loader.load(jsonScene.folder+jsonScene.panoImage, ( collada ) => {
-
             var material = new THREE.MeshBasicMaterial({ wireframe: false, map: texture });
-
             mesh = new THREE.Mesh(geometry, material);
-    
             scene.add(mesh);
-
         } );
         
         function onTransitionEnd() {
@@ -677,7 +672,9 @@
             intersects[0].object.material.transparent = true;
 
             if (!editMode) {
-                jump(intersects[0].object.userData.link);
+                //jump(intersects[0].object.userData.link);
+                camera2position(intersects[0].object);
+                
             } else {
             if (intersects[0].object == selectedObject) {
             //if (intersects[0].object.material.opacity !== 1) {
@@ -763,7 +760,6 @@
 
     function onPointerUp() {
         isUserInteracting = false;
-       
     }
 
     function onDocumentMouseWheel(event) {
@@ -778,26 +774,69 @@
         requestAnimationFrame(animate);
         update();
     }
+    function camera2position(obj) {
+        animateCamera = true;
 
+        // backup original rotation
+        lookAtSrc = camera.quaternion.clone();
+
+        // final rotation (with lookAt)
+        camera.lookAt( obj.position );
+        lookAtTarget = camera.quaternion.clone();
+
+        // revert to original rotation
+        camera.quaternion.copy( lookAtSrc );
+
+        var time = { t: 0 };
+
+        new TWEEN.Tween( time )
+            .to( { t : 1 }, 500 )
+            .easing( TWEEN.Easing.Quadratic.InOut )
+            .onStart( function() {
+            } )
+            .onUpdate( function() {
+                THREE.Quaternion.slerp( lookAtSrc, lookAtTarget, camera.quaternion, time.t );
+            } )
+            .onComplete( function() {
+                camera.quaternion.copy( lookAtTarget ); // so it is exact
+                camera.lookAt(lookAtTarget);
+                radius = Math.hypot(obj.position.x,obj.position.y,obj.position.z);
+
+                phi = Math.acos(obj.position.y / radius);
+                theta = Math.atan2(obj.position.z, obj.position.x);
+                lon = THREE.Math.radToDeg(theta);
+                lat = 90 - THREE.Math.radToDeg(phi);
+
+                animateCamera = false;
+                jump(obj.userData.link);
+            } )
+            .start();
+    
+    }
     function update() {
-        if (isUserInteracting === false) {
+        if (isUserInteracting) {
             //lon += 0.1;
+        } 
+        if (articleVisible) {
         }
-
-        lat = Math.max(- 85, Math.min(85, lat));
-        phi = THREE.MathUtils.degToRad(90 - lat);
-        theta = THREE.MathUtils.degToRad(lon);
-
-        camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
-        camera.target.y = 500 * Math.cos(phi);
-        camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
-
-        camera.lookAt(camera.target);
-
         /*
-        // distortion
-        camera.position.copy( camera.target ).negate();
-        */
+
+*/
+        if (!animateCamera) {
+                lat = Math.max(- 85, Math.min(85, lat));
+                phi = THREE.MathUtils.degToRad(90 - lat);
+                theta = THREE.MathUtils.degToRad(lon);
+
+                camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
+                camera.target.y = 500 * Math.cos(phi);
+                camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
+
+                camera.lookAt(camera.target);
+
+        } else {
+            TWEEN.update();   
+        }
+        
         renderer.render(scene, camera);
     }
     /*
