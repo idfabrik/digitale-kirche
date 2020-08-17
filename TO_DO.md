@@ -1,3 +1,7 @@
+update 17.08.2020
+- poi als HTML-Element testweise hinzugefügt.(grünes I). Dann gibt es zwar keine Verzerrung mehr, dafür ruckelt es ziemlich und fügt sich nicht ganz so schön in die Szene ein.
+  - online: pixelkrams.de/_/pano
+
 update 16.08.2020
 
 - s.u.

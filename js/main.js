@@ -529,7 +529,7 @@
         gui.add(controlObject, 'positionY', -100, 100);
     }
 
-    
+    var testObj = document.getElementById("test");
     function addLoadedGeometry() {
         interactiveObjects = [];
 
@@ -558,12 +558,36 @@
                 object.scale.set(fac, fac, fac)
             } else {
                 jsonScene.objects[i].scalePercent = 100;
-            }
+            }   
             object.lookAt(camera.position);
 
             scene.add(object);
             interactiveObjects.push(object);
+        }   
+        
+        testObj.style.backgroundImage = "url('scene1/poiTest.png')";  
+        
+    }
+    
+    function getCoordinates( element ) {
+
+        var screenVector = new THREE.Vector3();
+        element.localToWorld( screenVector );
+    
+        screenVector.project( camera );
+    
+        var posx = Math.round(( screenVector.x + 1 ) * renderer.domElement.offsetWidth / 2 );
+        var posy = Math.round(( 1 - screenVector.y ) * renderer.domElement.offsetHeight / 2 );
+    
+        if (posx >= 0 && posy >= 0) {
+            testObj.style.left = posx+'px';
+            testObj.style.top = posy+'px';
+            testObj.style.display = "block";
+        } else {
+            testObj.style.display = "none";
         }
+
+
     }
 
     function addRandomCubes(no) {
@@ -585,7 +609,7 @@
             object.position.z = Math.random() * 450 - 250;
             object.lookAt(camera.position);
 
-            scene.add(object);
+            scene.add(object);  
             interactiveObjects.push(object);
         }
     }
@@ -754,6 +778,9 @@
 
             lon = (onMouseDownMouseX - clientX) * 0.1 + onMouseDownLon;
             lat = (clientY - onMouseDownMouseY) * 0.1 + onMouseDownLat;
+
+           
+
         } else {
             // nur mouse
             detectObjectsHover(event.clientX, event.clientY);
@@ -821,6 +848,9 @@
             //lon += 0.1;
         } 
         if (articleVisible) {
+            testObj.style.display = "none";
+        } else {
+            getCoordinates(interactiveObjects[1]);
         }
         /*
 

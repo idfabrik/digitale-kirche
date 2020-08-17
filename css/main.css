@@ -859,3 +859,15 @@ dl dd {
         transform: rotate(360deg);
     }
 }
+
+#test {
+  width: 64px;
+  height: 64px;
+  background-repeat: no-repeat;
+  display: none;
+  position: fixed;
+  left: 50px;
+  top: 50px;  
+  z-index: 10;
+  transform: translate(-50%,-50%) scale(1.5);
+}
