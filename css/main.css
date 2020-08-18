@@ -188,6 +188,10 @@ body {
   display: block;
 }
 
+img {
+  max-width: 100%;
+}
+
 .image.left,
 .image.right {
   max-width: 40%;
@@ -527,7 +531,9 @@ dl dd {
 }
 #header nav ul {
 	display: flex;
-	margin-bottom: 0;
+  margin-bottom: 0;
+  align-items: center;
+  align-content: center;
 	list-style: none;
 	padding-left: 0;
 }
@@ -538,14 +544,11 @@ dl dd {
 	}
 
 		#header nav ul li a {
-			display: block;
-			min-width: 7.5rem;
-			height: 2.75rem;
-			line-height: 2.75rem;
-			padding: 0 1.25rem 0 1.45rem;
+      display: block;
+			padding: .5rem 1.25rem .5rem 1.45rem;
 			text-transform: uppercase;
-			letter-spacing: 0.2rem;
-			font-size: 0.8rem;
+      font-size: 0.8rem;
+      letter-spacing: .05em;
 			border-bottom: 0;
 			user-select: none;
 		}
@@ -870,4 +873,5 @@ dl dd {
   top: 50px;  
   z-index: 10;
   transform: translate(-50%,-50%) scale(1.5);
+  background: url(../scene1/poiTest.png) no-repeat;  
 }

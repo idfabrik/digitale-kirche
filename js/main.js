@@ -5,6 +5,7 @@
         $header = $('#header'),
         $footer = $('#footer'),
         $main = $('#main'),
+        $testObj = $('#test'),
         $main_articles = $main.children('article');
 
         var slickSlider_responsive = {
@@ -529,7 +530,7 @@
         gui.add(controlObject, 'positionY', -100, 100);
     }
 
-    var testObj = document.getElementById("test");
+    
     function addLoadedGeometry() {
         interactiveObjects = [];
 
@@ -565,53 +566,22 @@
             interactiveObjects.push(object);
         }   
         
-        testObj.style.backgroundImage = "url('scene1/poiTest.png')";  
+       
         
     }
-    
+
+
     function getCoordinates( element ) {
 
         var screenVector = new THREE.Vector3();
         element.localToWorld( screenVector );
-    
+        
         screenVector.project( camera );
     
-        var posx = Math.round(( screenVector.x + 1 ) * renderer.domElement.offsetWidth / 2 );
-        var posy = Math.round(( 1 - screenVector.y ) * renderer.domElement.offsetHeight / 2 );
-    
-        if (posx >= 0 && posy >= 0) {
-            testObj.style.left = posx+'px';
-            testObj.style.top = posy+'px';
-            testObj.style.display = "block";
-        } else {
-            testObj.style.display = "none";
-        }
-
-
-    }
-
-    function addRandomCubes(no) {
-        interactiveObjects = [];
-
-        //var geometry = new THREE.BoxBufferGeometry(20, 20, 20);
-        var geometry = new THREE.PlaneGeometry(50, 50, 10);
-
-        for (var i = 0; i < no; i++) {
-            var mat = new THREE.MeshPhongMaterial();
-            mat.map = new THREE.TextureLoader().load("./jesus1.png");
-            mat.flatShading = true;
-            mat.transparent = true;
-            var object = new THREE.Mesh(geometry, mat);
-            object.userData.id = i;
-            //var object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff, map:new THREE.ImageUtils.loadTexture("./blatt.png") }));
-            object.position.x = Math.random() * 800 - 400;
-            object.position.y = 0;//Math.random() * 450 - 220;
-            object.position.z = Math.random() * 450 - 250;
-            object.lookAt(camera.position);
-
-            scene.add(object);  
-            interactiveObjects.push(object);
-        }
+        return {
+            x: Math.floor(( screenVector.x + 1 ) * renderer.domElement.offsetWidth / 2 ),
+            y: Math.floor(( 1 - screenVector.y ) * renderer.domElement.offsetHeight / 2 )
+        };
     }
 
     function setupKeyControls() {
@@ -820,7 +790,7 @@
         var time = { t: 0 };
 
         new TWEEN.Tween( time )
-            .to( { t : 1 }, 500 )
+            .to( { t : 1 }, 1000 )
             .easing( TWEEN.Easing.Quadratic.InOut )
             .onStart( function() {
             } )
@@ -848,13 +818,22 @@
             //lon += 0.1;
         } 
         if (articleVisible) {
-            testObj.style.display = "none";
+            $testObj.hide();
         } else {
-            getCoordinates(interactiveObjects[1]);
-        }
-        /*
+            
+            var position = getCoordinates(interactiveObjects[1]);
+            if (position.x >= 0 && position.y >= 0) {
+                $testObj.css({
+                    left: position.x,
+                    top: position.y
+                });
+                $testObj.show();
+            } else {
+                $testObj.hide();
+            }
 
-*/
+        }
+
         if (!animateCamera) {
                 lat = Math.max(- 85, Math.min(85, lat));
                 phi = THREE.MathUtils.degToRad(90 - lat);
