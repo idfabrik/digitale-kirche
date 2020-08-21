@@ -863,15 +863,23 @@ dl dd {
     }
 }
 
-#test {
+#poi-container {
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: none;
+}
+.poi {
   width: 64px;
   height: 64px;
   background-repeat: no-repeat;
-  display: none;
+  
   position: fixed;
-  left: 50px;
-  top: 50px;  
-  z-index: 10;
-  transform: translate(-50%,-50%) scale(1.5);
+  
+  transform: translate(-50%,-50%) scale(1);
   background: url(../scene1/poiTest.png) no-repeat;  
+  display: block;
+    border: 0;
+    outline: 0;
 }

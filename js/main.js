@@ -5,7 +5,6 @@
         $header = $('#header'),
         $footer = $('#footer'),
         $main = $('#main'),
-        $testObj = $('#test'),
         $main_articles = $main.children('article');
 
         var slickSlider_responsive = {
@@ -435,7 +434,7 @@
 
 
     var camera, scene, renderer;
-    var interactiveObjects, selectedObject;
+    var interactiveObjects, selectedObject, interactive2DObjects;
     var isUserInteracting = false,
         onMouseDownMouseX = 0, onMouseDownMouseY = 0,
         lon = 180, onMouseDownLon = 0,
@@ -468,13 +467,16 @@
         geometry.scale(- 1, 1, 1);
 
         // PRELOADER START
-
+        var loadingScreen = document.createElement('section'); 
+        loadingScreen.id = 'loading-screen'; 
+        loadingScreen.innerHTML = '<div id="loader"></div>'; 
+        document.body.appendChild(loadingScreen);
+        
         const loadingManager = new THREE.LoadingManager( () => {
-	        const loadingScreen = document.getElementById( 'loading-screen' );
+           // const loadingScreen = document.getElementById( 'loading-screen' );
             loadingScreen.classList.add( 'fade-out' );
             // optional: remove loader from DOM via event listener
             loadingScreen.addEventListener( 'transitionend', onTransitionEnd );
-            
         } );
         
         const loader = new THREE.TextureLoader( loadingManager );
@@ -565,9 +567,33 @@
             scene.add(object);
             interactiveObjects.push(object);
         }   
+    }
+
+    function addLoadedGeometryAs2D() {
+        interactive2DObjects = [];
+
+        var poi_container = document.createElement('section'); 
+        poi_container.id = 'poi-container'; 
+        document.body.appendChild(poi_container);
         
-       
-        
+        var l = jsonScene.objects.length;
+
+        for (var i = 0; i < l; i++) {
+            var poi = document.createElement('a'); 
+            poi.classList.add('poi')
+            poi.setAttribute('data-id', i);
+            poi.setAttribute('href','#'+jsonScene.objects[i].link);
+
+            var position = getCoordinates(interactiveObjects[i]);
+            if (position.x >= 0 && position.y >= 0) {
+                $(poi).css({
+                    left: position.x,
+                    top: position.y
+                });
+            }
+            document.getElementById("poi-container").appendChild(poi)
+            interactive2DObjects.push($(poi));
+        }   
     }
 
 
@@ -814,23 +840,28 @@
     
     }
     function update() {
+        TWEEN.update();   
         if (isUserInteracting) {
             //lon += 0.1;
         } 
         if (articleVisible) {
-            $testObj.hide();
+            $('#poi-container').hide();
         } else {
-            
-            var position = getCoordinates(interactiveObjects[1]);
-            if (position.x >= 0 && position.y >= 0) {
-                $testObj.css({
-                    left: position.x,
-                    top: position.y
-                });
-                $testObj.show();
-            } else {
-                $testObj.hide();
+            for (var i = 0; i < interactive2DObjects.length; i++) {
+                var $el = interactive2DObjects[i];
+                var position = getCoordinates(interactiveObjects[i]);
+
+                if (position.x >= 0 && position.y >= 0) {
+                    $el.css({
+                        left: position.x,
+                        top: position.y
+                    });
+                    $el.show();
+                } else {
+                    $el.hide();
+                }
             }
+            $('#poi-container').show();
 
         }
 
@@ -846,7 +877,7 @@
                 camera.lookAt(camera.target);
 
         } else {
-            TWEEN.update();   
+            //TWEEN.update();   
         }
         
         renderer.render(scene, camera);
@@ -889,6 +920,7 @@
         jsonScene =  JSON.parse(data.innerHTML).scene;
         init();
         addLoadedGeometry();
+        addLoadedGeometryAs2D();
         animate();
     } else {
         alert("No Scene Data");

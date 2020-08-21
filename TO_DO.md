@@ -1,3 +1,8 @@
+update 21.08.2020
+- loader div wird per js hinzugefügt
+- poi als 2D-Elemente zusätzlich eingefügt. Keine Verzerrung, dafür ruckeln. Aussehen über css bzw alle ausblenden über #poi-container display:none!important;
+- flackern nach Kameraanimation behoben
+
 update 17.08.2020
 - poi als HTML-Element testweise hinzugefügt.(grünes I). Dann gibt es zwar keine Verzerrung mehr, dafür ruckelt es ziemlich und fügt sich nicht ganz so schön in die Szene ein.
   - online: pixelkrams.de/_/pano
