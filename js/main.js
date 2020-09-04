@@ -455,7 +455,9 @@
         var h = $(container).height();
         // berechnet aus Messwerten: 0.6,100;1,80;2.1,50
         // y = -33.333*x+102
-        return (-33.33*w/h)+120;
+        //trace(w/h);
+        //return (-33.33*w/h)+120;
+        return (-25*w/h)+115;
     }
 
     function init() {
@@ -800,6 +802,7 @@
             var fov = camera.fov + event.deltaY * 0.05;
             camera.fov = THREE.MathUtils.clamp(fov, 10, 75);
             camera.updateProjectionMatrix();
+            trace(fov);
         
     }
 
