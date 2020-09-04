@@ -445,19 +445,26 @@
 
     var control;
     var jsonScene, cw = 1600;
+    var container = document.getElementById('scene');
 
     //var manager = new THREE.LoadingManager();
     //var loader = new THREE.TextureLoader(manager);
 
+    function calcFOV() {
+        var w = $(container).width();
+        var h = $(container).height();
+        // berechnet aus Messwerten: 0.6,100;1,80;2.1,50
+        // y = -33.333*x+102
+        return (-33.33*w/h)+120;
+    }
+
     function init() {
 
-        var container, mesh;
-        container = document.getElementById('scene');
-        
+        var mesh;
         var cw = $(container).width();
         //if (cw > 1600) cw = 1600;
-
-        camera = new THREE.PerspectiveCamera(45, cw / $(container).height(), 1, 1100);
+        
+        camera = new THREE.PerspectiveCamera(calcFOV(), cw / $(container).height(), 1, 1100);
         camera.target = new THREE.Vector3(0, 0, 0);
 
         scene = new THREE.Scene();
@@ -567,6 +574,7 @@
             scene.add(object);
             interactiveObjects.push(object);
         }   
+        trace("l: "+interactiveObjects.length);
     }
 
     function addLoadedGeometryAs2D() {
@@ -594,8 +602,8 @@
             document.getElementById("poi-container").appendChild(poi)
             interactive2DObjects.push($(poi));
         }   
+        trace("l2d: "+interactive2DObjects.length);
     }
-
 
     function getCoordinates( element ) {
 
@@ -651,12 +659,13 @@
     }
 
     function onWindowResize() {
-        var container = document.getElementById('scene');
         var w = $(container).width();
         var h = $(container).height();
         camera.aspect = w / h;
+        camera.fov = calcFOV();
         camera.updateProjectionMatrix();
         renderer.setSize(w, h);
+
         //renderer.setSize(window.innerWidth, window.innerHeight);
     }
     
@@ -672,7 +681,7 @@
     var projector = new THREE.Projector();
 
     function detectObjects(posX, posY) {
-        var container = document.getElementById('scene');
+        
         var w = $(container).width();
         var h = $(container).height();
 
@@ -718,8 +727,6 @@
     var lastHoverId=-1;
 
     function detectObjectsHover(posX, posY) {
-
-        var container = document.getElementById('scene');
         var w = $(container).width();
         var h = $(container).height();
 
