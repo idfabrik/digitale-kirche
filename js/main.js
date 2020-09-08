@@ -443,9 +443,20 @@
         animateCamera = false,
         lookAtSrc, lookAtTarget;
 
-    var control;
+    
+    var fovMAX = 80;
+    
+    var prevLon = 180;
+    var prevLat = 0;			
+
+    var lonVelocity = 0;
+    var latVelocity = 0;
+    var dampingFactor = 0.1;
+    var then = Date.now();
+
     var jsonScene, cw = 1600;
     var container = document.getElementById('scene');
+    var hotspot = false;
 
     //var manager = new THREE.LoadingManager();
     //var loader = new THREE.TextureLoader(manager);
@@ -533,14 +544,6 @@
 
         window.addEventListener('resize', onWindowResize, false);
     }
-
-
-    function addControls(controlObject) {
-        var gui = new dat.GUI();
-        gui.add(controlObject, 'positionX', -100, 100);
-        gui.add(controlObject, 'positionY', -100, 100);
-    }
-
     
     function addLoadedGeometry() {
         interactiveObjects = [];
@@ -606,6 +609,41 @@
         }   
         trace("l2d: "+interactive2DObjects.length);
     }
+    function addLoadedGeometryAsHotspot() {
+        var l = jsonScene.objects.length;
+        // set render auto clear false.
+        renderer.autoClear = false;
+
+        // initialize global configuration
+        THREE.threeDataConfig = {renderer: renderer, camera: camera};
+
+        
+        var w = parseInt(jsonScene.poiWidth);
+        var h = parseInt(jsonScene.poiHeight);
+        for (var i = 0; i < l; i++) {
+            hotspot = new THREE.Hotspot(jsonScene.folder+jsonScene.objects[i].poi, w, h);
+            hotspot.position.set(parseInt(jsonScene.objects[i].x),parseInt(jsonScene.objects[i].y),parseInt(jsonScene.objects[i].z)); // set 3D hotspot position (  f/b , o/u  ,r/l)
+            hotspot.pivotPoint = THREE.HotspotPivotPoints.CENTER;
+        }
+/*
+        hotspot.onMouseUp = function(){
+            if (lonVelocity == 0 && latVelocity == 0) {
+                trace("mouse Up");
+                //window.open("index.html?position=2&latitude="+latitude+"&longitude="+longitude,"_self")
+            }
+        };
+        
+        hotspot.onMouseOver = function(){
+            // actions
+            $('html,body').css('cursor', 'pointer');
+        };
+                    
+        hotspot.onMouseOut = function(){
+            // actions
+            $('html,body').css('cursor', 'move');
+        };*/
+    }
+
 
     function getCoordinates( element ) {
 
@@ -757,21 +795,22 @@
         }
     }
 
+            
     function onPointerStart(event) {
         if (articleVisible) return;
         
-            isUserInteracting = true;
-            var clientX = event.clientX || event.touches[0].clientX;
-            var clientY = event.clientY || event.touches[0].clientY;
+        isUserInteracting = true;
+        var clientX = event.clientX || event.touches[0].clientX;
+        var clientY = event.clientY || event.touches[0].clientY;
 
-            onMouseDownMouseX = clientX;
-            onMouseDownMouseY = clientY;
+        onMouseDownMouseX = clientX;
+        onMouseDownMouseY = clientY;
 
-            onMouseDownLon = lon;
-            onMouseDownLat = lat;
+        onMouseDownLon = lon;
+        onMouseDownLat = lat;
 
-            detectObjects(clientX, clientY);
-        
+        detectObjects(clientX, clientY);
+
     }
 
     function onPointerMove(event) {
@@ -780,11 +819,11 @@
         if (isUserInteracting === true) {
             var clientX = event.clientX || event.touches[0].clientX;
             var clientY = event.clientY || event.touches[0].clientY;
+            
+            var current_speed = (camera.fov/fovMAX) * 0.1;
 
-            lon = (onMouseDownMouseX - clientX) * 0.1 + onMouseDownLon;
-            lat = (clientY - onMouseDownMouseY) * 0.1 + onMouseDownLat;
-
-           
+            lon = (onMouseDownMouseX - clientX) * current_speed  + onMouseDownLon;
+            lat = (clientY - onMouseDownMouseY) * current_speed  + onMouseDownLat;
 
         } else {
             // nur mouse
@@ -851,9 +890,7 @@
     }
     function update() {
         TWEEN.update();   
-        if (isUserInteracting) {
-            //lon += 0.1;
-        } 
+       
         if (articleVisible) {
             $('#poi-container').hide();
         } else {
@@ -874,24 +911,55 @@
             $('#poi-container').show();
 
         }
+        
+        // Get time since last frame
+        var now = Date.now();
+        var dT = now - then;
+        var dLon, dLat;
 
-        if (!animateCamera) {
-                lat = Math.max(- 85, Math.min(85, lat));
-                phi = THREE.MathUtils.degToRad(90 - lat);
-                theta = THREE.MathUtils.degToRad(lon);
-
-                camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
-                camera.target.y = 500 * Math.cos(phi);
-                camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
-
-                camera.lookAt(camera.target);
-
+        if (isUserInteracting) {
+             // Get distance travelled since last frame
+             dLon = lon - prevLon;
+             dLat = lat - prevLat;
+             // velocity = distance / time
+             lonVelocity = dLon / dT;
+             latVelocity = dLat / dT;
         } else {
-            //TWEEN.update();   
+             // old position + ( velocity * time ) = new position
+             lon += lonVelocity * dT;
+             lat += latVelocity * dT;
+             lonVelocity *= ( 1 - dampingFactor );
+             latVelocity *= ( 1 - dampingFactor);
+        } 
+
+         // Save these for next frame
+         then = now;
+         prevLon = lon;
+         prevLat = lat;
+        if (!animateCamera) {
+
+            lat = Math.max(- 85, Math.min(85, lat));
+            phi = THREE.MathUtils.degToRad(90 - lat);
+            theta = THREE.MathUtils.degToRad(lon);
+
+            camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
+            camera.target.y = 500 * Math.cos(phi);
+            camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
+
+            camera.lookAt(camera.target);
         }
         
-        renderer.render(scene, camera);
+  // hotspot instance update.
+  //hotspot.update();
+
+  // first render main scene
+  renderer.clear();
+  renderer.render(scene, camera);
+
+  // call hotspots update
+  //THREE.HotspotGlobals.update();
     }
+    
     /*
      █████   █████ █████ ██████████   ██████████    ███████   
     ░░███   ░░███ ░░███ ░░███░░░░███ ░░███░░░░░█  ███░░░░░███ 
@@ -931,6 +999,7 @@
         init();
         addLoadedGeometry();
         addLoadedGeometryAs2D();
+        //addLoadedGeometryAsHotspot();
         animate();
     } else {
         alert("No Scene Data");
