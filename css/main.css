@@ -260,7 +260,9 @@ img {
   width: 100%;
   height: 100%;
 }
-
+video {
+  max-width: 100%;
+}
 @media screen and (max-width: 736px) {
   .image.main,
   .video  {
@@ -337,7 +339,7 @@ em, i {
 }
 
 p {
-	margin: 0 0 2rem 0;
+	margin: 0 0 1rem 0;
 }
 
 h1, h2, h3, h4, h5, h6 {

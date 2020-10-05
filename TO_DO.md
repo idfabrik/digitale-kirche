@@ -1,3 +1,12 @@
+update 05.10.2020
+- 2D Objekte wieder rausgeschmissen 
+- aktuelle Szeneendaten in Szene1 gepackt
+  - dort das alles inline-css entfernt
+
+#wichtig wäre:
+- kein inline css
+- Klassen vergeben
+
 update 21.08.2020
 - loader div wird per js hinzugefügt
 - poi als 2D-Elemente zusätzlich eingefügt. Keine Verzerrung, dafür ruckeln. Aussehen über css bzw alle ausblenden über #poi-container display:none!important;

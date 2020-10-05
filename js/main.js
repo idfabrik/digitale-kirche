@@ -456,7 +456,6 @@
 
     var jsonScene, cw = 1600;
     var container = document.getElementById('scene');
-    var hotspot = false;
 
     //var manager = new THREE.LoadingManager();
     //var loader = new THREE.TextureLoader(manager);
@@ -608,40 +607,6 @@
             interactive2DObjects.push($(poi));
         }   
         trace("l2d: "+interactive2DObjects.length);
-    }
-    function addLoadedGeometryAsHotspot() {
-        var l = jsonScene.objects.length;
-        // set render auto clear false.
-        renderer.autoClear = false;
-
-        // initialize global configuration
-        THREE.threeDataConfig = {renderer: renderer, camera: camera};
-
-        
-        var w = parseInt(jsonScene.poiWidth);
-        var h = parseInt(jsonScene.poiHeight);
-        for (var i = 0; i < l; i++) {
-            hotspot = new THREE.Hotspot(jsonScene.folder+jsonScene.objects[i].poi, w, h);
-            hotspot.position.set(parseInt(jsonScene.objects[i].x),parseInt(jsonScene.objects[i].y),parseInt(jsonScene.objects[i].z)); // set 3D hotspot position (  f/b , o/u  ,r/l)
-            hotspot.pivotPoint = THREE.HotspotPivotPoints.CENTER;
-        }
-/*
-        hotspot.onMouseUp = function(){
-            if (lonVelocity == 0 && latVelocity == 0) {
-                trace("mouse Up");
-                //window.open("index.html?position=2&latitude="+latitude+"&longitude="+longitude,"_self")
-            }
-        };
-        
-        hotspot.onMouseOver = function(){
-            // actions
-            $('html,body').css('cursor', 'pointer');
-        };
-                    
-        hotspot.onMouseOut = function(){
-            // actions
-            $('html,body').css('cursor', 'move');
-        };*/
     }
 
 
@@ -894,8 +859,9 @@
         if (articleVisible) {
             $('#poi-container').hide();
         } else {
-            for (var i = 0; i < interactive2DObjects.length; i++) {
-                var $el = interactive2DObjects[i];
+            /*
+            for (var i = 0; i < interactiveObjects.length; i++) {
+                //var $el = interactive2DObjects[i];
                 var position = getCoordinates(interactiveObjects[i]);
 
                 if (position.x >= 0 && position.y >= 0) {
@@ -907,7 +873,7 @@
                 } else {
                     $el.hide();
                 }
-            }
+            }*/
             $('#poi-container').show();
 
         }
@@ -949,15 +915,10 @@
             camera.lookAt(camera.target);
         }
         
-  // hotspot instance update.
-  //hotspot.update();
-
   // first render main scene
   renderer.clear();
   renderer.render(scene, camera);
 
-  // call hotspots update
-  //THREE.HotspotGlobals.update();
     }
     
     /*
@@ -998,8 +959,7 @@
         jsonScene =  JSON.parse(data.innerHTML).scene;
         init();
         addLoadedGeometry();
-        addLoadedGeometryAs2D();
-        //addLoadedGeometryAsHotspot();
+        //addLoadedGeometryAs2D();
         animate();
     } else {
         alert("No Scene Data");
