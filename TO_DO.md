@@ -1,11 +1,14 @@
 update 05.10.2020
 - 2D Objekte wieder rausgeschmissen 
-- aktuelle Szeneendaten in Szene1 gepackt
+- header ist jetzt fixed (wg. touchproblemen)
+- ersten Menüpunkt als Titel formatiert und den Rest versucht zu verteilen
+- aktuelle Szenendaten in Szene1 gepackt
   - dort das alles inline-css entfernt
 
 #wichtig wäre:
 - kein inline css
 - Klassen vergeben
+- loader wird dynamisch erstellt! Also aus dem HTML entfernen
 
 update 21.08.2020
 - loader div wird per js hinzugefügt

@@ -461,8 +461,8 @@
     //var loader = new THREE.TextureLoader(manager);
 
     function calcFOV() {
-        var w = $(container).width();
-        var h = $(container).height();
+        var w = window.innerWidth;
+        var h = window.innerHeight;
         // berechnet aus Messwerten: 0.6,100;1,80;2.1,50
         // y = -33.333*x+102
         //trace(w/h);
@@ -473,10 +473,10 @@
     function init() {
 
         var mesh;
-        var cw = $(container).width();
+        var cw = window.innerWidth;
         //if (cw > 1600) cw = 1600;
         
-        camera = new THREE.PerspectiveCamera(calcFOV(), cw / $(container).height(), 1, 1100);
+        camera = new THREE.PerspectiveCamera(calcFOV(), cw / window.innerHeight, 1, 1100);
         camera.target = new THREE.Vector3(0, 0, 0);
 
         scene = new THREE.Scene();
@@ -527,7 +527,7 @@
 
         renderer = new THREE.WebGLRenderer();
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(cw, $(container).height());
+        renderer.setSize(cw, window.innerHeight);
 
         container.appendChild(renderer.domElement);
 
@@ -664,8 +664,11 @@
     }
 
     function onWindowResize() {
-        var w = $(container).width();
-        var h = $(container).height();
+        //var w = window.innerWidth;
+        var w = window.innerWidth;
+        //var h = window.innerHeight;
+        //var h = window.innerHeight;
+        var h = window.innerHeight;
         camera.aspect = w / h;
         camera.fov = calcFOV();
         camera.updateProjectionMatrix();
@@ -687,8 +690,8 @@
 
     function detectObjects(posX, posY) {
         
-        var w = $(container).width();
-        var h = $(container).height();
+        var w = window.innerWidth;
+        var h = window.innerHeight;
 
         var vector = new THREE.Vector3((posX / w) * 2 - 1, -(posY / h) * 2 + 1, 0.5);
         projector.unprojectVector(vector, camera);
@@ -732,8 +735,8 @@
     var lastHoverId=-1;
 
     function detectObjectsHover(posX, posY) {
-        var w = $(container).width();
-        var h = $(container).height();
+        var w = window.innerWidth;
+        var h = window.innerHeight;
 
         var vector = new THREE.Vector3((posX / w) * 2 - 1, -(posY / h) * 2 + 1, 0.5);
         projector.unprojectVector(vector, camera);
